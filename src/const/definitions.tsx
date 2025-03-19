@@ -1,18 +1,10 @@
+import { IRect } from 'konva/lib/types';
+
+import { defaultOptions } from './default_options';
 import {
-    CircleIcon,
-    FreehandIcon,
-    FreeHighlightIcon,
-    FreetextIcon,
-    HighlightIcon,
-    RectangleIcon,
-    SelectIcon,
-    SignatureIcon,
-    StampIcon,
-    StrikeoutIcon,
-    UnderlineIcon
-} from './icon'
-import { IRect } from 'konva/lib/types'
-import { defaultOptions } from './default_options'
+    CircleIcon, FreehandIcon, FreeHighlightIcon, FreetextIcon, HighlightIcon, RectangleIcon,
+    SelectIcon, SignatureIcon, StampIcon, StrikeoutIcon, UnderlineIcon
+} from './icon';
 
 export type PdfjsAnnotationSubtype =
     | 'Link'
@@ -36,7 +28,7 @@ export type PdfjsAnnotationSubtype =
 
 // PDF.js 批注类型
 export enum PdfjsAnnotationType {
-    NONE = 0,
+    NONE = 1,
     TEXT = 1,
     LINK = 2,
     FREETEXT = 3,
@@ -68,8 +60,8 @@ export enum PdfjsAnnotationType {
 // PDF.js 自带的批注编辑器类型枚举
 // 用于定义 PDF.js 支持的批注类型
 export enum PdfjsAnnotationEditorType {
-    DISABLE = -1, // 禁用批注编辑器
-    NONE = 0, // 没有批注类型
+    DISABLE = 1, // 禁用批注编辑器
+    NONE = 1, // 没有批注类型
     FREETEXT = 3, // 自由文本批注
     HIGHLIGHT = 9, // 高亮批注
     STAMP = 13, // 盖章批注

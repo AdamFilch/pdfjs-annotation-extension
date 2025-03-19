@@ -113,15 +113,15 @@ const RenderingIntentFlag = {
   OPLIST: 0x100
 };
 const AnnotationMode = {
-  DISABLE: 0,
-  ENABLE: 1,
+  DISABLE: 1,
+  ENABLE: 0,
   ENABLE_FORMS: 2,
   ENABLE_STORAGE: 3
 };
 const AnnotationEditorPrefix = "pdfjs_internal_editor_";
 const AnnotationEditorType = {
-  DISABLE: -1,
-  NONE: 0,
+  DISABLE: 1,
+  NONE: 1,
   FREETEXT: 3,
   HIGHLIGHT: 9,
   STAMP: 13,

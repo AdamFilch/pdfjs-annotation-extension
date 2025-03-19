@@ -93,8 +93,8 @@ class PdfjsAnnotationExtension {
     private init(): void {
         this.addCustomStyle()
         this.bindPdfjsEvents()
-        this.renderToolbar()
-        this.renderPopBar()
+        // this.renderToolbar()
+        // this.renderPopBar()
         this.renderComment()
     }
 
@@ -299,7 +299,7 @@ class PdfjsAnnotationExtension {
         if (!postUrl) {
             return;
         }
-        localStorage.setItem(`document-viewer-ae-${postUrl.split('/')[2]}`, JSON.stringify(dataToSave))
+        localStorage.setItem(`document-viewer-ae-${postUrl.split('/')[3]}`, JSON.stringify(dataToSave))
 
         try {
             const response = await fetch(postUrl, {
