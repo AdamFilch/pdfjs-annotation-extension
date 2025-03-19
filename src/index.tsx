@@ -93,8 +93,8 @@ class PdfjsAnnotationExtension {
     private init(): void {
         this.addCustomStyle()
         this.bindPdfjsEvents()
-        this.renderToolbar()
-        this.renderPopBar()
+        // this.renderToolbar()
+        // this.renderPopBar()
         this.renderComment()
     }
 
