@@ -160,6 +160,7 @@ class PdfjsAnnotationExtension {
 
     private setOption(name: string, value: string) {
         this.appOptions[name] = value
+        // test
     }
 
     private getOption(name: string) {
