@@ -13,6 +13,7 @@ import { HASH_PARAMS_GET_URL, IAnnotationType } from '../../const/definitions'; 
 interface SignatureToolProps {
     annotation: IAnnotationType // 签名工具的注释类型
     onAdd: (signatureDataUrl: string) => void // 回调函数，当签名被添加时调用
+    fileid?: string
 }
 
 const SignatureTool: React.FC<SignatureToolProps> = props => {
@@ -31,16 +32,28 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     const { t } = useTranslation()
 
     useEffect(() => {
-        let current_document_store
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i)
-            if (key && key.startsWith('document-viewer-ae')) {
-                current_document_store = JSON.parse(localStorage.getItem(key))
-                const signature = current_document_store.find((annotation) => annotation.subtype == 'Caret')
+        try {
+            const document_store = JSON.parse(localStorage.getItem(`document-viewer-ae-${props.fileid}`))
+            const signature = document_store.find((annotation) => annotation.subtype == 'Caret')
+            if (signature.contentsObj) {
                 setSignatures([signature.contentsObj.image])
-                break
             }
+
+        } catch (err) {
+            setSignatures([])
         }
+
+        // for (let i = 0; i < localStorage.length; i++) {
+        //     const key = localStorage.key(i)
+        //     if (key && key.startsWith('document-viewer-ae')) {
+        //         current_document_store = JSON.parse(localStorage.getItem(key))
+        //         const signature = current_document_store.find((annotation) => annotation.subtype == 'Caret')
+        //         if (signature.contentsObj) {
+        //             setSignatures([signature.contentsObj.image])
+        //         }
+        //         break
+        //     }
+        // }
     }, [])
 
     // 更新 colorRef 当 currentColor 改变时

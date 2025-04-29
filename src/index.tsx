@@ -190,6 +190,7 @@ class PdfjsAnnotationExtension {
                 onSave={() => {
                     this.saveData()
                 }}
+                fileid={this.getOption(HASH_PARAMS_POST_URL).split('/')[2]}
             />
         )
     }

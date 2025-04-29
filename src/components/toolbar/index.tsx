@@ -15,7 +15,8 @@ import { StampTool } from './stamp';
 interface CustomToolbarProps {
     onChange: (annotation: IAnnotationType | null, dataTransfer: string | null) => void
     onSave: () => void,
-    allow?: string[]
+    allow?: string[],
+    fileid?: string
 }
 
 export interface CustomToolbarRef {
@@ -90,7 +91,7 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
             case AnnotationType.SIGNATURE:
                 return (
                     <li title={t(`annotations.${annotation.name}`)} key={index} {...commonProps}>
-                        <SignatureTool annotation={annotation} onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)} />
+                        <SignatureTool annotation={annotation} onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)} fileid={props.fileid} />
                     </li>
                 )
 
