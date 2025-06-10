@@ -28,8 +28,8 @@ export interface CustomToolbarRef {
  */
 const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function CustomToolbar(props, ref) {
     const allow = props.allow
-    const allowSign = ['Caret']
-    const allowAnnotate = ['FreeText', 'PolyLine', 'Ink', 'Circle', 'Square', 'Underline', 'StrikeOut', 'Highlight', 'Stamp']
+    const allowSign = ['Caret', 'Stamp']
+    const allowAnnotate = ['FreeText', 'PolyLine', 'Ink', 'Circle', 'Square', 'Underline', 'StrikeOut', 'Highlight']
     const allowed = []
     if (allow.includes('sign')) {
         allowed.push(...allowSign)

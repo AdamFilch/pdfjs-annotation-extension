@@ -1,5 +1,5 @@
 #toolbarViewerMiddle{
-    left: calc(50% - 165px);
+    left: calc(50%);
 }
 .CustomToolbar {
     width: 100%;
@@ -61,13 +61,13 @@
     }
 }
 
-.CustomToolbar::after {
-    content: "";
-    display: block;
-    width: 330px; /* 右边间隔 */
-    height: 100%; /* 确保占位符高度和工具栏一致 */
-    flex-shrink: 0; /* 防止占位符被缩小 */
-}
+// .CustomToolbar::after {
+//     content: "";
+//     display: block;
+//     width: 330px; /* 右边间隔 */
+//     height: 100%; /* 确保占位符高度和工具栏一致 */
+//     flex-shrink: 0; /* 防止占位符被缩小 */
+// }
 
 .SignatureTool {
     margin: 0 auto;
@@ -196,9 +196,9 @@
             }
         }
     }
-    .CustomToolbar::after{
-        display: none;
-    }
+    // .CustomToolbar::after{
+    //     display: none;
+    // }
     #toolbarViewerMiddle{
         left: calc(50%);
     }
