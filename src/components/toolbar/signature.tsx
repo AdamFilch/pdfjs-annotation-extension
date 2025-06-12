@@ -28,7 +28,8 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     const colorRef = useRef(currentColor) // 用于追踪 currentColor 的最新值
     const [bgImage, setBgImage] = useState<Konva.Image | null>(null)
     const [isOKButtonDisabled, setIsOKButtonDisabled] = useState(true) // 初始状态下禁用 OK 按钮
-
+    const [isTimestampEnabled, setIsTimestampEnabled] = useState(false);
+    const timestampRef = useRef<Konva.Text | null>(null);
 
     const { t } = useTranslation()    
 
@@ -64,6 +65,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     // 打开 Modal 窗口
     const openModal = () => {
         handleOpenChange(false)
+        setIsTimestampEnabled(false)
         setIsModalOpen(true)
     }
 
@@ -250,8 +252,6 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
         }
     };
 
-    const [isTimestampEnabled, setIsTimestampEnabled] = useState(false);
-    const timestampRef = useRef<Konva.Text | null>(null);
 
     const handleToggleTimestamp = (event: React.ChangeEvent<HTMLInputElement>) => {
         const checked = event.target.checked;
