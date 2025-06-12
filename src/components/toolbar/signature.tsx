@@ -198,7 +198,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 alert(t('normal.fileSizeLimit', { value: formatFileSize(maxSize) }));
                 return;
             }
-    
+
             const reader = new FileReader();
             reader.onload = e => {
                 if (typeof e.target?.result === 'string') {
@@ -207,17 +207,18 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                     imageObj.onload = () => {
                         const stage = konvaStageRef.current;
                         if (!stage) return;
-                    
+
                         const canvasWidth = defaultOptions.signature.WIDTH;
                         const canvasHeight = defaultOptions.signature.HEIGHT;
-                    
+
                         const imageWidth = imageObj.width / 5;
                         const imageHeight = imageObj.height / 5;
-                    
+
                         // Calculate position to center the image
                         const x = (canvasWidth - imageWidth) / 2;
                         const y = (canvasHeight - imageHeight) / 2;
-                    
+
+
                         const bgImage = new Konva.Image({
                             image: imageObj,
                             x,
@@ -227,30 +228,41 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             listening: false,
                             // Optional: watermark effect
                             // opacity: 0.5
+                            timestamp: Date.now()
                         });
-                    
+
+                        const timestampText = new Konva.Text({
+                            x: 250,
+                            y: 180,
+                            text: new Date().toDateString(), // Initialize with an empty string
+                            fontSize: 14,
+                            fontFamily: 'Arial',
+                            fill: 'black',
+                          });
+
                         const layer = stage.getLayers()[0] || new Konva.Layer();
                         const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
-                    
+
                         layer.destroyChildren();
                         layer.add(bgImage);
-                    
+                        layer.add(timestampText)
+
                         if (stage.getLayers().length === 0) {
                             stage.add(layer);
                             stage.add(signatureLayer);
                         }
-                    
+
                         stage.draw();
                         setIsOKButtonDisabled(false);
                     };
-                    
+
                 }
             };
-    
+
             reader.readAsDataURL(_file);
         }
     };
-    
+
 
 
     return (
@@ -336,9 +348,14 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             {t('normal.clear')}
                         </div>
                     </div>
-                    <div className='SignatureStamp-Block'>
-                        <div>Add a stamp/watermark</div>
-                        <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
+                    <div>
+                        <div className='SignatureStamp-Block'>
+                            <div>Stamp/Watermark</div>
+                            <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
+                        </div>
+                        <div>
+                            <div>Timestamp</div>
+                        </div>
                     </div>
                 </div>
             </Modal>
