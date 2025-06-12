@@ -175,6 +175,14 @@
     }
 }
 
+.SignatureStampInput {
+ 
+    &-Block {
+        display: 'flex';
+        gap: 3;
+    }
+}
+
 .StampTool {
     position: relative;
     input {

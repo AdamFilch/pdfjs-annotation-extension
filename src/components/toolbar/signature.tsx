@@ -9,6 +9,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 
 import { defaultOptions } from '../../const/default_options';
 import { HASH_PARAMS_GET_URL, IAnnotationType } from '../../const/definitions'; // 导入自定义类型和默认设置
+import { formatFileSize } from '../../utils/utils';
 
 interface SignatureToolProps {
     annotation: IAnnotationType // 签名工具的注释类型
@@ -23,6 +24,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     const containerRef = useRef<HTMLDivElement | null>(null) // 引用签名容器的 DOM 节点
     const konvaStageRef = useRef<Konva.Stage | null>(null) // 引用 Konva.Stage 实例
     const colorRef = useRef(currentColor) // 用于追踪 currentColor 的最新值
+    const [bgImage, setBgImage] = useState<Konva.Image | null>(null)
 
     const [isOKButtonDisabled, setIsOKButtonDisabled] = useState(true) // 初始状态下禁用 OK 按钮
 
@@ -184,6 +186,63 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
         })
     }
 
+    const maxSize: number = defaultOptions.stamp.MAX_SIZE
+
+    // 文件输入变化的事件处理函数
+    const onInputFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        const files = target.files;
+        if (files?.length) {
+            const _file = files[0];
+            if (_file.size > maxSize) {
+                alert(t('normal.fileSizeLimit', { value: formatFileSize(maxSize) }));
+                return;
+            }
+    
+            const reader = new FileReader();
+            reader.onload = e => {
+                if (typeof e.target?.result === 'string') {
+                    const imageObj = new window.Image();
+                    imageObj.src = e.target.result;
+                    imageObj.onload = () => {
+                        const stage = konvaStageRef.current;
+                        if (!stage) return;
+    
+                        // Try to get existing background layer or create one
+                        const layer = stage.getLayers()[0] || new Konva.Layer();
+                        const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
+    
+                        const bgImage = new Konva.Image({
+                            image: imageObj,
+                            x: 0,
+                            y: 0,
+                            width: defaultOptions.signature.WIDTH,
+                            height: defaultOptions.signature.HEIGHT,
+                            listening: false,
+                        });
+    
+                        // Clear the background layer and add the new background image
+                        layer.destroyChildren();
+                        layer.add(bgImage);
+    
+                        // Add layers to stage (background first, then drawing)
+                        if (stage.getLayers().length === 0) {
+                            stage.add(layer);
+                            stage.add(signatureLayer);
+                        }
+    
+                        stage.draw();
+                        setIsOKButtonDisabled(false);
+                    };
+                }
+            };
+    
+            reader.readAsDataURL(_file);
+        }
+    };
+    
+
+
     return (
         <>
             <Popover
@@ -209,11 +268,11 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             })}
                         </ul>
                         {signatures.length < 1 && (
-                        <div className="SignaturePop-Toolbar">
-                            <Button block type="link" onClick={openModal} icon={<PlusCircleOutlined />}>
-                                {t('toolbar.buttons.createSignature')}
-                            </Button>
-                        </div>
+                            <div className="SignaturePop-Toolbar">
+                                <Button block type="link" onClick={openModal} icon={<PlusCircleOutlined />}>
+                                    {t('toolbar.buttons.createSignature')}
+                                </Button>
+                            </div>
                         )}
                     </div>
                 }
@@ -266,6 +325,10 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                         >
                             {t('normal.clear')}
                         </div>
+                    </div>
+                    <div className='SignatureStamp-Block'>
+                        <div>Add a stamp/watermark</div>
+                        <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
                     </div>
                 </div>
             </Modal>
