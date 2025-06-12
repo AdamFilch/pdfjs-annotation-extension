@@ -1,6 +1,6 @@
 import './index.scss';
 
-import { ColorPicker, message } from 'antd';
+import { ColorPicker, message, Modal } from 'antd';
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,12 +8,13 @@ import { defaultOptions } from '../../const/default_options';
 import {
     annotationDefinitions, AnnotationType, IAnnotationType, PdfjsAnnotationEditorType
 } from '../../const/definitions';
-import { PaletteIcon, SaveIcon } from '../../const/icon';
+import { PaletteIcon, ResetIcon, SaveIcon } from '../../const/icon';
 import { SignatureTool } from './signature';
 import { StampTool } from './stamp';
 
 interface CustomToolbarProps {
     onChange: (annotation: IAnnotationType | null, dataTransfer: string | null) => void
+    onClearSig: () => void,
     onSave: () => void,
     allow?: string[],
     fileid?: string
@@ -37,9 +38,10 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
     if (allow.includes('annotate')) {
         allowed.push(...allowAnnotate)
     }
+    const [isModalOpen, setIsModalOpen] = useState(false) // 控制 Modal 的显示状态
     const [currentAnnotation, setCurrentAnnotation] = useState<IAnnotationType | null>(null)
+    const [signatures, setSignatures] = useState<string[]>([]) // 存储所有签名的数组
     const [annotations, setAnnotations] = useState<IAnnotationType[]>(annotationDefinitions.filter(item => {
-
         return (item.pdfjsEditorType !== PdfjsAnnotationEditorType.HIGHLIGHT && allowed.includes(item.subtype)) || item.name == 'select'
     }))
     const [dataTransfer, setDataTransfer] = useState<string | null>(null)
@@ -91,7 +93,9 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
             case AnnotationType.SIGNATURE:
                 return (
                     <li title={t(`annotations.${annotation.name}`)} key={index} {...commonProps}>
-                        <SignatureTool annotation={annotation} onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)} fileid={props.fileid} />
+                        <SignatureTool annotation={annotation} onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)} fileid={props.fileid} signatures={signatures} setSignatures={(v) => {
+                            setSignatures(v)
+                        }} />
                     </li>
                 )
 
@@ -119,6 +123,7 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
         setAnnotations(updatedAnnotations)
         setCurrentAnnotation(updatedAnnotation)
     }
+
 
     return (
         <div className="CustomToolbar">
@@ -155,9 +160,32 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
                         <div className="name">{t('normal.save')}</div>
                     </li>
                 }
-
-
             </ul>
+            <ul className="buttons">
+                {(allow.length === 0 || allow.includes('sign')) && (
+                    <li title="Clear Signatures" onClick={() => {
+                        setIsModalOpen(true)
+                    }}>
+                        <div className="icon">
+                            <ResetIcon />
+                        </div>
+                        <div className="name">Clear Signatures</div>
+                    </li>
+                )}
+            </ul>
+            <Modal 
+            title={"Resetting signatures will also delete all signatures, are you sure you want to do this?"}
+            open={isModalOpen}
+            onOk={() => {
+                setSignatures([])
+                props.onClearSig()
+                setIsModalOpen(false)
+            }}
+            onCancel={() => {
+                setIsModalOpen(false)
+            }}
+            >
+            </Modal>
         </div>
     )
 })

@@ -14,7 +14,9 @@ import { formatFileSize } from '../../utils/utils';
 interface SignatureToolProps {
     annotation: IAnnotationType // 签名工具的注释类型
     onAdd: (signatureDataUrl: string) => void // 回调函数，当签名被添加时调用
-    fileid?: string
+    fileid?: string,
+    signatures: string[],
+    setSignatures: (v: string[]) => void
 }
 
 const SignatureTool: React.FC<SignatureToolProps> = props => {
@@ -25,38 +27,24 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     const konvaStageRef = useRef<Konva.Stage | null>(null) // 引用 Konva.Stage 实例
     const colorRef = useRef(currentColor) // 用于追踪 currentColor 的最新值
     const [bgImage, setBgImage] = useState<Konva.Image | null>(null)
-
     const [isOKButtonDisabled, setIsOKButtonDisabled] = useState(true) // 初始状态下禁用 OK 按钮
 
-    const [signatures, setSignatures] = useState<string[]>([]) // 存储所有签名的数组
 
-
-    const { t } = useTranslation()
+    const { t } = useTranslation()    
 
     useEffect(() => {
+
         try {
             const document_store = JSON.parse(localStorage.getItem(`document-viewer-ae-${props.fileid}`))
             const signature = document_store.find((annotation) => annotation.subtype == 'Caret')
             if (signature.contentsObj) {
-                setSignatures([signature.contentsObj.image])
+                props.setSignatures([signature.contentsObj.image])
             }
 
         } catch (err) {
-            setSignatures([])
         }
 
-        // for (let i = 0; i < localStorage.length; i++) {
-        //     const key = localStorage.key(i)
-        //     if (key && key.startsWith('document-viewer-ae')) {
-        //         current_document_store = JSON.parse(localStorage.getItem(key))
-        //         const signature = current_document_store.find((annotation) => annotation.subtype == 'Caret')
-        //         if (signature.contentsObj) {
-        //             setSignatures([signature.contentsObj.image])
-        //         }
-        //         break
-        //     }
-        // }
-    }, [])
+    }, [props.signatures])
 
     // 更新 colorRef 当 currentColor 改变时
     useEffect(() => {
@@ -70,7 +58,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
 
     // 处理签名的变化，将新的签名添加到签名列表中
     const handleSignaturesChange = (signature: string) => {
-        setSignatures([...signatures, signature])
+        props.setSignatures([...props.signatures, signature])
     }
 
     // 打开 Modal 窗口
@@ -314,7 +302,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 content={
                     <div>
                         <ul className="SignaturePop-Container">
-                            {signatures.map((signature, index) => {
+                            {props.signatures.map((signature, index) => {
                                 return (
                                     <li key={index}>
                                         <img
@@ -331,7 +319,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                                 )
                             })}
                         </ul>
-                        {signatures.length < 1 && (
+                        {props.signatures.length < 1 && (
                             <div className="SignaturePop-Toolbar">
                                 <Button block type="link" onClick={openModal} icon={<PlusCircleOutlined />}>
                                     {t('toolbar.buttons.createSignature')}

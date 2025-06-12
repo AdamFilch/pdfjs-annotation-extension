@@ -190,6 +190,12 @@ class PdfjsAnnotationExtension {
                 onSave={() => {
                     this.saveData()
                 }}
+                onClearSig={() => {
+                    for (let ann of this.painter.getData().filter((ann) => ann.subtype == "Caret")) {
+                        this.painter.delete(ann.id)
+                    }
+                    this.clearSignatures()
+                }}
                 fileid={this.getOption(HASH_PARAMS_POST_URL).split('/')[2]}
             />
         )
@@ -323,7 +329,19 @@ class PdfjsAnnotationExtension {
         }
     }
 
+    public async clearSignatures(): Promise<void> {
+        const postUrl = this.getOption(HASH_PARAMS_POST_URL);
+        if (!postUrl) {
+            return;
+        }
 
+        const document_store = JSON.parse(localStorage.getItem(`document-viewer-ae-${postUrl.split('/')[2]}`))
+        const removed_signature = document_store.find((annotation) => annotation.subtype != 'Caret')
+        console.log('%c [ Removed Signatures ]', 'font-size:13px; background:#d10d00; color:#ff5144;', removed_signature)
+
+        localStorage.setItem(`document-viewer-ae-${postUrl.split('/')[2]}`, JSON.stringify(removed_signature))
+
+    }
 
     /**
      * @description 保存批注数据
