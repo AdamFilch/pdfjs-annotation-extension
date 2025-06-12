@@ -228,24 +228,23 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             listening: false,
                             // Optional: watermark effect
                             // opacity: 0.5
-                            timestamp: Date.now()
                         });
 
-                        const timestampText = new Konva.Text({
-                            x: 250,
-                            y: 180,
-                            text: new Date().toDateString(), // Initialize with an empty string
-                            fontSize: 14,
-                            fontFamily: 'Arial',
-                            fill: 'black',
-                          });
+                        // const timestampText = new Konva.Text({
+                        //     x: 250,
+                        //     y: 180,
+                        //     text: new Date().toDateString(), // Initialize with an empty string
+                        //     fontSize: 14,
+                        //     fontFamily: 'Arial',
+                        //     fill: 'black',
+                        // });
 
                         const layer = stage.getLayers()[0] || new Konva.Layer();
                         const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
 
                         layer.destroyChildren();
                         layer.add(bgImage);
-                        layer.add(timestampText)
+                        // layer.add(timestampText)
 
                         if (stage.getLayers().length === 0) {
                             stage.add(layer);
@@ -260,6 +259,49 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
             };
 
             reader.readAsDataURL(_file);
+        }
+    };
+
+    const [isTimestampEnabled, setIsTimestampEnabled] = useState(false);
+    const timestampRef = useRef<Konva.Text | null>(null);
+
+    const handleToggleTimestamp = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = event.target.checked;
+        setIsTimestampEnabled(checked);
+
+        const stage = konvaStageRef.current;
+        if (!stage) return;
+
+        const layer = stage.getLayers()[0] || new Konva.Layer();
+        const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
+        if (!signatureLayer) return;
+
+        // Remove previous timestamp if exists
+        if (timestampRef.current) {
+            timestampRef.current.destroy();
+            timestampRef.current = null;
+            signatureLayer.draw();
+        }
+
+        if (checked) {
+
+            const timestampText = new Konva.Text({
+                x: 250,
+                y: 180,
+                text: new Date().toDateString(), // Initialize with an empty string
+                fontSize: 14,
+                fontFamily: 'Arial',
+                fill: 'black',
+            });
+
+            layer.add(timestampText);
+            timestampRef.current = timestampText;
+
+            if (stage.getLayers().length === 0) {
+                stage.add(layer);
+                stage.add(signatureLayer);
+            }
+
         }
     };
 
@@ -353,8 +395,15 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             <div>Stamp/Watermark</div>
                             <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
                         </div>
-                        <div>
-                            <div>Timestamp</div>
+                        <div style={{ marginTop: 10 }}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={isTimestampEnabled}
+                                    onChange={handleToggleTimestamp}
+                                />
+                                {' '}Add Timestamp
+                            </label>
                         </div>
                     </div>
                 </div>
