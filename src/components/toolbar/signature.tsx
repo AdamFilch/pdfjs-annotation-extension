@@ -207,33 +207,43 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                     imageObj.onload = () => {
                         const stage = konvaStageRef.current;
                         if (!stage) return;
-    
-                        // Try to get existing background layer or create one
-                        const layer = stage.getLayers()[0] || new Konva.Layer();
-                        const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
-    
+                    
+                        const canvasWidth = defaultOptions.signature.WIDTH;
+                        const canvasHeight = defaultOptions.signature.HEIGHT;
+                    
+                        const imageWidth = imageObj.width / 5;
+                        const imageHeight = imageObj.height / 5;
+                    
+                        // Calculate position to center the image
+                        const x = (canvasWidth - imageWidth) / 2;
+                        const y = (canvasHeight - imageHeight) / 2;
+                    
                         const bgImage = new Konva.Image({
                             image: imageObj,
-                            x: 0,
-                            y: 0,
-                            width: defaultOptions.signature.WIDTH,
-                            height: defaultOptions.signature.HEIGHT,
+                            x,
+                            y,
+                            width: imageWidth,
+                            height: imageHeight,
                             listening: false,
+                            // Optional: watermark effect
+                            // opacity: 0.5
                         });
-    
-                        // Clear the background layer and add the new background image
+                    
+                        const layer = stage.getLayers()[0] || new Konva.Layer();
+                        const signatureLayer = stage.getLayers()[1] || new Konva.Layer();
+                    
                         layer.destroyChildren();
                         layer.add(bgImage);
-    
-                        // Add layers to stage (background first, then drawing)
+                    
                         if (stage.getLayers().length === 0) {
                             stage.add(layer);
                             stage.add(signatureLayer);
                         }
-    
+                    
                         stage.draw();
                         setIsOKButtonDisabled(false);
                     };
+                    
                 }
             };
     
