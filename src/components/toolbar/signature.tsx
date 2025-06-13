@@ -287,6 +287,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 y: y,
                 text: new Date().toDateString(), // Initialize with an empty string
                 fontSize: 50,
+                shadowColor: 'black',
                 fontFamily: 'Arial',
                 fill: 'gray',
                 rotationDeg: 345
@@ -367,19 +368,44 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
             >
                 <div>
                     <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc' }}>
-
-                        <div className='SignatureStamp-Block'>
-                            <div>Stamp/Watermark</div>
-                            <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
+                        {/* Stamp Upload Button */}
+                        <div className="SignatureStamp-Block">
+                            <label
+                                htmlFor="stamp-upload"
+                                style={{
+                                    backgroundColor: '#007bff',
+                                    color: 'white',
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
+                                    cursor: 'pointer',
+                                    display: 'inline-block',
+                                }}
+                            >
+                                Stamp
+                            </label>
+                            <input
+                                id="stamp-upload"
+                                type="file"
+                                accept=".png,.jpg"
+                                onChange={onInputFileChange}
+                                style={{ display: 'none' }}
+                            />
                         </div>
-                        <div style={{ marginTop: 10 }}>
-                            <label>
+
+                        {/* Timestamp Checkbox */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                                 <input
                                     type="checkbox"
                                     checked={isTimestampEnabled}
                                     onChange={handleToggleTimestamp}
+                                    style={{
+                                        width: '16px',
+                                        height: '16px',
+                                        cursor: 'pointer',
+                                    }}
                                 />
-                                {' '}Add Timestamp
+                                Timestamp
                             </label>
                         </div>
                     </div>
