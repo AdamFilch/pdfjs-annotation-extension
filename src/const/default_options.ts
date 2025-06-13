@@ -11,7 +11,7 @@ const defaultOptions = {
     // 签名默认配置
     signature : {
         COLORS: ['#000000', '#ff0000'],
-        WIDTH: 366,
+        WIDTH: 450,
         HEIGHT: 200
     },
     // 盖章默认配置

@@ -31,7 +31,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
     const [isTimestampEnabled, setIsTimestampEnabled] = useState(false);
     const timestampRef = useRef<Konva.Text | null>(null);
 
-    const { t } = useTranslation()    
+    const { t } = useTranslation()
 
     useEffect(() => {
 
@@ -273,14 +273,28 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
 
         if (checked) {
 
+            const canvasWidth = defaultOptions.signature.WIDTH;
+            const canvasHeight = defaultOptions.signature.HEIGHT;
+
+
+            // Calculate position to center the image
+            const x = (canvasWidth) / 2;
+            const y = (canvasHeight) / 2;
+
+
             const timestampText = new Konva.Text({
-                x: 250,
-                y: 180,
+                x: x,
+                y: y,
                 text: new Date().toDateString(), // Initialize with an empty string
-                fontSize: 14,
+                fontSize: 50,
                 fontFamily: 'Arial',
-                fill: 'black',
+                fill: 'gray',
+                rotationDeg: 345
             });
+
+            // Set the offset to center the text visually
+            timestampText.offsetX(timestampText.width() / 2);
+            timestampText.offsetY(timestampText.height() / 2);
 
             layer.add(timestampText);
             timestampRef.current = timestampText;
@@ -352,6 +366,23 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 className="SignatureTool"
             >
                 <div>
+                    <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc' }}>
+
+                        <div className='SignatureStamp-Block'>
+                            <div>Stamp/Watermark</div>
+                            <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
+                        </div>
+                        <div style={{ marginTop: 10 }}>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={isTimestampEnabled}
+                                    onChange={handleToggleTimestamp}
+                                />
+                                {' '}Add Timestamp
+                            </label>
+                        </div>
+                    </div>
                     <div className="SignatureTool-Container" style={{ width: defaultOptions.signature.WIDTH }}>
                         <div className="SignatureTool-Container-info">{t('toolbar.message.signatureArea')}</div>
                         <div ref={containerRef} style={{ height: defaultOptions.signature.HEIGHT, width: defaultOptions.signature.WIDTH }}></div>
@@ -376,22 +407,6 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                             }}
                         >
                             {t('normal.clear')}
-                        </div>
-                    </div>
-                    <div>
-                        <div className='SignatureStamp-Block'>
-                            <div>Stamp/Watermark</div>
-                            <input type="file" accept=".png,.jpg" onChange={onInputFileChange} />
-                        </div>
-                        <div style={{ marginTop: 10 }}>
-                            <label>
-                                <input
-                                    type="checkbox"
-                                    checked={isTimestampEnabled}
-                                    onChange={handleToggleTimestamp}
-                                />
-                                {' '}Add Timestamp
-                            </label>
                         </div>
                     </div>
                 </div>
