@@ -367,15 +367,15 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 className="SignatureTool"
             >
                 <div>
-                    <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc' }}>
+                    <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc', paddingTop: 2, paddingBottom: 2}}>
                         {/* Stamp Upload Button */}
-                        <div className="SignatureStamp-Block">
+                        <div className="SignatureStamp-Block" style={{paddingLeft: 5}}>
                             <label
                                 htmlFor="stamp-upload"
                                 style={{
                                     backgroundColor: '#007bff',
                                     color: 'white',
-                                    padding: '8px 16px',
+                                    padding: '6px 14px',
                                     borderRadius: '6px',
                                     cursor: 'pointer',
                                     display: 'inline-block',
@@ -393,7 +393,7 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                         </div>
 
                         {/* Timestamp Checkbox */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingRight: 5 }}>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                                 <input
                                     type="checkbox"
