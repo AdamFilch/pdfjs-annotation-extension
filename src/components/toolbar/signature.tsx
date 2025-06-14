@@ -423,9 +423,10 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                         </div>
                         <div
                             className="clear"
-                            onClick={() => {
+                            onClick={(e) => {
                                 if (konvaStageRef.current) {
                                     // 清空绘制内容
+                                    setIsTimestampEnabled(false)
                                     konvaStageRef.current.clear()
                                     konvaStageRef.current.getLayers().forEach(layer => layer.destroyChildren())
                                     setIsOKButtonDisabled(true) // 禁用 OK 按钮
