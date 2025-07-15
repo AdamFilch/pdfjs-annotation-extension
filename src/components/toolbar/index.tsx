@@ -17,7 +17,8 @@ interface CustomToolbarProps {
     onClearSig: () => void,
     onSave: () => void,
     allow?: string[],
-    fileid?: string
+    fileid?: string,
+    checkForSignatures: () => boolean
 }
 
 export interface CustomToolbarRef {
@@ -73,6 +74,19 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
         setCurrentAnnotation(annotation)
     }
 
+    const handleClearSignatures = () => {
+
+        if (props.checkForSignatures()) {// There is no signatures existing within the document
+            setIsModalOpen(true)
+            return false
+        } else {
+            setSignatures([])
+            props.onClearSig()
+            return true
+        }
+
+    }
+
 
     const buttons = annotations.map((annotation, index) => {
         const isSelected = annotation.type === selectedType
@@ -93,9 +107,16 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
             case AnnotationType.SIGNATURE:
                 return (
                     <li title={t(`annotations.${annotation.name}`)} key={index} {...commonProps}>
-                        <SignatureTool annotation={annotation} onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)} fileid={props.fileid} signatures={signatures} setSignatures={(v) => {
-                            setSignatures(v)
-                        }} />
+                        <SignatureTool
+                            annotation={annotation}
+                            onAdd={(signatureDataUrl) => handleAdd(signatureDataUrl, annotation)}
+                            fileid={props.fileid}
+                            signatures={signatures}
+                            setSignatures={(v) => {
+                                setSignatures(v)
+                            }}
+                            clearSignatures={handleClearSignatures}
+                        />
                     </li>
                 )
 
@@ -161,29 +182,27 @@ const CustomToolbar = forwardRef<CustomToolbarRef, CustomToolbarProps>(function 
                     </li>
                 }
             </ul>
-            <ul className="buttons">
+            {/* <ul className="buttons">
                 {(allow.length === 0 || allow.includes('sign')) && (
-                    <li title="Clear Signatures" onClick={() => {
-                        setIsModalOpen(true)
-                    }}>
+                    <li title="Clear Signatures" onClick={handleClearSignatures}>
                         <div className="icon">
                             <ResetIcon />
                         </div>
                         <div className="name">Clear Signatures</div>
                     </li>
                 )}
-            </ul>
-            <Modal 
-            title={"Resetting signatures will also delete all signatures, are you sure you want to do this?"}
-            open={isModalOpen}
-            onOk={() => {
-                setSignatures([])
-                props.onClearSig()
-                setIsModalOpen(false)
-            }}
-            onCancel={() => {
-                setIsModalOpen(false)
-            }}
+            </ul> */}
+            <Modal
+                title={"Resetting signatures will also delete all signatures, are you sure you want to do this?"}
+                open={isModalOpen}
+                onOk={() => {
+                    setSignatures([])
+                    props.onClearSig()
+                    setIsModalOpen(false)
+                }}
+                onCancel={() => {
+                    setIsModalOpen(false)
+                }}
             >
             </Modal>
         </div>

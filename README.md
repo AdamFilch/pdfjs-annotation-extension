@@ -159,3 +159,14 @@ For details about pdfjs annotation types, please refer to the documentation here
 
  Currently, this extension has been tested only with pdfjs-4.3.136-dist.
  **Note that it does not support drawing on rotated pages.**
+
+
+
+
+
+
+ ## M4-Portal
+ 
+Install miniserve
+
+to serve the application user must type `miniserve` into the terminal 

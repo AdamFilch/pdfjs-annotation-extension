@@ -16,7 +16,8 @@ interface SignatureToolProps {
     onAdd: (signatureDataUrl: string) => void // 回调函数，当签名被添加时调用
     fileid?: string,
     signatures: string[],
-    setSignatures: (v: string[]) => void
+    setSignatures: (v: string[]) => void,
+    clearSignatures: () => boolean
 }
 
 const SignatureTool: React.FC<SignatureToolProps> = props => {
@@ -334,10 +335,19 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                                 )
                             })}
                         </ul>
-                        {props.signatures.length < 1 && (
+                        {props.signatures.length < 1 ? (
                             <div className="SignaturePop-Toolbar">
                                 <Button block type="link" onClick={openModal} icon={<PlusCircleOutlined />}>
                                     {t('toolbar.buttons.createSignature')}
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="SignaturePop-Toolbar">
+                                <Button block type="link" onClick={() => {
+                                    
+                                    setIsPopoverOpen(props.clearSignatures())
+                                }} >
+                                    Clear Signature
                                 </Button>
                             </div>
                         )}
@@ -367,9 +377,9 @@ const SignatureTool: React.FC<SignatureToolProps> = props => {
                 className="SignatureTool"
             >
                 <div>
-                    <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc', paddingTop: 2, paddingBottom: 2}}>
+                    <div className="SignatureTool-Toolbar" style={{ width: defaultOptions.signature.WIDTH, borderTop: '1px solid #ccc', paddingTop: 2, paddingBottom: 2 }}>
                         {/* Stamp Upload Button */}
-                        <div className="SignatureStamp-Block" style={{paddingLeft: 5}}>
+                        <div className="SignatureStamp-Block" style={{ paddingLeft: 5 }}>
                             <label
                                 htmlFor="stamp-upload"
                                 style={{

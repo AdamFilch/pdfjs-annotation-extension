@@ -182,6 +182,9 @@ class PdfjsAnnotationExtension {
         this.$PDFJS_toolbar_container.insertAdjacentElement('afterend', toolbar)
         createRoot(toolbar).render(
             <CustomToolbar
+                checkForSignatures={() => {
+                    return this.painter.getData().some((ann) => ann.subtype == 'Caret')
+                }}
                 allow={this.appOptions[HASH_PARAMS_ALLOW_ARR].split(',')}
                 ref={this.customToolbarRef}
                 onChange={(currentAnnotation, dataTransfer) => {
